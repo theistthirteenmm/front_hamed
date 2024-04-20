@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Home Page</title>
+  <link rel="stylesheet" type="text/css" href="css/styleHome.css">
+</head>
+<body>
+<div class="container">
+  <div class="sidebar">
+    <ul>
+      <li><a href="#">Dashboard</a></li>
+      <li><a href="/vehicle.html">ماشین ها</a></li>
+      <li><a href="#">Settings</a></li>
+      <li><a href="#" id="logoutBtn">Log out</a></li> <!-- لینک برای خروج کاربر -->
+    </ul>
+  </div>
+  <div class="content">
+    <h1>Welcome to the Home Page!</h1>
+    <p>This is the content of the home page. You can customize it as you like.</p>
+  </div>
+</div>
+
+<script>
+  // تعریف متغیر آدرس سرور
+  var serverUrl = 'http://localhost:8080';
+
+  // اضافه کردن event listener به گزینه logout برای انجام لاگ‌اوت
+  document.getElementById('logoutBtn').addEventListener('click', function(event) {
+    event.preventDefault();
+
+    // دریافت توکن از localStorage
+    var token = localStorage.getItem('accessToken');
+
+    // ارسال درخواست به سرور برای لاگ‌اوت
+    fetch(serverUrl + '/log/out?token=' + token, {
+      method: 'POST'
+    })
+      .then(response => {
+        if (response.ok) {
+          // در صورتی که لاگ‌اوت موفقیت‌آمیز بود، توکن از localStorage پاک می‌شود
+          localStorage.removeItem('accessToken');
+          // و سپس کاربر به صفحه لاگین هدایت می‌شود یا هر صفحه دیگری که شما تعیین کرده‌اید
+          window.location.href = '/index.html';
+        } else {
+          // نمایش پیغام خطا در صورتی که لاگ‌اوت ناموفق بود
+          console.error('Logout failed: ', response.statusText);
+          alert('Logout failed: ' + response.statusText);
+        }
+      })
+      .catch(error => {
+        // نمایش پیغام خطا در صورت بروز خطا در فرآیند لاگ‌اوت
+        console.error('Error during logout: ', error);
+        alert('Error during logout: ' + error.message);
+      });
+  });
+</script>
+</body>
+</html>

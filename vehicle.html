@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Vehicle</title>
+  <link rel="stylesheet" type="text/css" href="css/vehicle.css">
+</head>
+<body>
+<h1>Add Vehicle</h1>
+<form id="vehicleForm">
+  <label for="vehiclesCode">Vehicles Code:</label>
+  <input type="text" id="vehiclesCode" name="vehiclesCode" required><br>
+
+  <label for="allocationStatus">Allocation Status:</label>
+  <input type="text" id="allocationStatus" name="allocationStatus" required><br>
+
+  <label for="experts">Experts:</label>
+  <input type="text" id="experts" name="experts" required><br>
+
+  <label for="allocation">Allocation:</label>
+  <input type="text" id="allocation" name="allocation" required><br>
+
+  <label for="system">System:</label>
+  <input type="text" id="system" name="system" required><br>
+
+  <label for="carType">Car Type:</label>
+  <input type="text" id="carType" name="carType" required><br>
+
+  <label for="carModel">Car Model:</label>
+  <input type="text" id="carModel" name="carModel" required><br>
+
+  <label for="style">Style:</label>
+  <input type="text" id="style" name="style" required><br>
+
+  <label for="chassisNo">Chassis Number:</label>
+  <input type="text" id="chassisNo" name="chassisNo" required><br>
+
+  <label for="engineNumber">Engine Number:</label>
+  <input type="text" id="engineNumber" name="engineNumber" required><br>
+
+  <label for="ColoDescription">Color Description:</label>
+  <input type="text" id="ColoDescription" name="ColoDescription" required><br>
+
+  <label for="factory">Factory:</label>
+  <input type="text" id="factory" name="factory" required><br>
+
+  <label for="placeOfVisit">Place of Visit:</label>
+  <input type="text" id="placeOfVisit" name="placeOfVisit" required><br>
+
+  <label for="dateOfVisit">Date of Visit:</label>
+  <input type="date" id="dateOfVisit" name="dateOfVisit" required><br>
+
+  <button type="submit">Save</button>
+</form>
+
+<script>
+  var serverUrl = 'http://localhost:8080'; // آدرس سرور
+
+  // اضافه کردن event listener به فرم برای ارسال مشخصات ماشین به سرور
+  document.getElementById('vehicleForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // دریافت اطلاعات از فرم
+    var formData = new FormData(this);
+
+    // ارسال درخواست به سرور برای ذخیره‌سازی مشخصات ماشین
+    fetch(serverUrl + '/save', {
+      method: 'POST',
+      body: formData
+    })
+      .then(response => {
+        if (response.ok) {
+          // نمایش پیغام موفقیت‌آمیزی به کاربر
+          alert('Vehicle details saved successfully!');
+          // پاک کردن محتویات فرم برای ورود اطلاعات جدید
+          document.getElementById('vehicleForm').reset();
+        } else {
+          // نمایش پیغام خطا در صورتی که عملیات ذخیره ناموفق بود
+          console.error('Error saving vehicle details: ', response.statusText);
+          alert('Error saving vehicle details: ' + response.statusText);
+        }
+      })
+      .catch(error => {
+        // نمایش پیغام خطا در صورت بروز خطا در فرآیند ارسال درخواست
+        console.error('Error saving vehicle details: ', error);
+        alert('Error saving vehicle details: ' + error.message);
+      });
+  });
+</script>
+</body>
+</html>

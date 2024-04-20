@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Vehicle</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    input[type="text"],
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Create Vehicle</h2>
+  <div class="form-group">
+    <label for="carType">نوع ماشین:</label>
+    <select id="carType">
+      <option value="1">Type 1</option>
+      <option value="2">Type 2</option>
+      <option value="3">Type 3</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="factory">کارخانه تولید کننده:</label>
+    <select id="factory">
+      <option value="1">Type 1</option>
+      <option value="2">Type 2</option>
+      <option value="3">Type 3</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="placeOfVisit">محل بازدید:</label>
+    <select id="placeOfVisit">
+      <option value="1">Type 1</option>
+      <option value="2">Type 2</option>
+      <option value="3">Type 3</option>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="engineNumber">شماره متور:</label>
+    <input type="text" id="engineNumber" placeholder="Enter vehicle name">
+  </div>
+  <div class="form-group">
+    <label for="chassisNo">شماره بدنه:</label>
+    <input type="text" id="chassisNo" placeholder="Enter chassis number">
+  </div>
+  <button id="saveBtn">Save</button>
+</div>
+
+<script>
+  document.getElementById('saveBtn').addEventListener('click', function() {
+    var token = localStorage.getItem('accessToken');
+    var carType = document.getElementById('carType').value;
+    var engineNumber = document.getElementById('engineNumber').value;
+    var chassisNo = document.getElementById('chassisNo').value;
+    var factory = document.getElementById('factory').value;
+    var placeOfVisit = document.getElementById('placeOfVisit').value;
+
+    var data = {
+      carType: carType,
+      engineNumber: engineNumber,
+      chassisNo: chassisNo,
+      factory: factory,
+      placeOfVisit: placeOfVisit,
+    };
+
+    fetch('http://localhost:8080/vehicles-controller/save', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+      .then(response => response.json())
+      .then(data => {
+        alert('Vehicle created successfully!');
+        // You can redirect or do any other action here after successful creation
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while creating the vehicle!');
+      });
+  });
+</script>
+</body>
+</html>

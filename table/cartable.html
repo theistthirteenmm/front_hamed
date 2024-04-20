@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Tables</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f8f9fa;
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+    tr:hover {
+      background-color: #f5f5f5;
+    }
+    button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+<h2>API Table</h2>
+<table id="dataTable">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Cartable Name</th>
+    <th>Task Name</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <!-- Table rows will be filled by API -->
+  </tbody>
+</table>
+
+<h2>Received Data</h2>
+<table id="receivedDataTable">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Chassis No</th>
+    <th>Style</th>
+    <th>Allocation Status</th>
+  </tr>
+  </thead>
+  <tbody>
+  <!-- Table rows will be filled with received data -->
+  </tbody>
+</table>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var token = localStorage.getItem('accessToken');
+    fetch('http://localhost:8080/cartable-controller/getCartable', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        const tableBody = document.querySelector('#dataTable tbody');
+        tableBody.innerHTML = '';
+        data.forEach(item => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+              <td>${item.id}</td>
+              <td>${item.cartableName}</td>
+              <td>${item.taskName}</td>
+              <td><button onclick="sendRequest(${item.id})">Send Request</button></td>
+            `;
+          tableBody.appendChild(row);
+        });
+      })
+      .catch(error => console.error('Error:', error));
+  });
+
+  function sendRequest(id) {
+    var token = localStorage.getItem('accessToken');
+    fetch(`http://localhost:8080/cartable-controller/goEntity/${id}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        const receivedTableBody = document.querySelector('#receivedDataTable tbody');
+        receivedTableBody.innerHTML = '';
+        data.forEach(item => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+              <td>${item.id}</td>
+              <td>${item.chassisNo}</td>
+              <td>${item.style}</td>
+              <td>${item.allocationStatus}</td>
+            `;
+          receivedTableBody.appendChild(row);
+        });
+      })
+      .catch(error => console.error('Error:', error));
+  }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login Page</title>
+  <style>
+    /* CSS برای زیبایی صفحه و اصلاح‌های امنیتی */
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+    }
+    input {
+      margin-bottom: 10px;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    button {
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      background-color: #5cb85c;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #4cae4c;
+    }
+    .error-message {
+      display: none;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+<form id="loginForm">
+  <input type="text" id="username" placeholder="Username" required />
+  <input type="password" id="password" placeholder="Password" required />
+  <div class="error-message" id="errorMessage"></div> <!-- برای نمایش پیغام‌های خطا -->
+  <button type="submit">Login</button>
+</form>
+
+<script>
+  // تعریف متغیر آدرس سرور
+  var serverUrl = 'http://localhost:8080';
+
+  document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // جلوگیری از بارگذاری مجدد صفحه
+
+    var username = document.getElementById('username').value;
+    var password = document.getElementById('password').value;
+
+    fetch(serverUrl + '/auth/authenticate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: username,
+        password: password
+      })
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json(); // تبدیل پاسخ به JSON
+      })
+      .then(data => {
+        console.log(data); // چاپ پاسخ در کنسول
+        // بررسی که آیا accessToken دریافت شده است
+        if (data && data.accessToken) {
+          // ذخیره accessToken در localStorage
+          localStorage.setItem('accessToken', data.accessToken);
+          // ریدایرکت کاربر به صفحه home
+          window.location.href ='/hamed/index.html';
+        } else {
+          // نمایش پیغام خطا در صورت عدم دریافت accessToken
+          document.getElementById('errorMessage').innerText = 'Login failed! Please check your credentials.';
+          document.getElementById('errorMessage').style.display = 'block';
+        }
+      })
+
+  });
+</script>
+</body>
+</html>

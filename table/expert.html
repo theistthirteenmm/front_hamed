@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experts List</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    tr:hover {
+      background-color: #f5f5f5;
+    }
+    .add-expert-btn {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<h2>Experts List</h2>
+<table id="expertsTable">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Field</th>
+    <th>Experience</th>
+  </tr>
+  </thead>
+  <tbody>
+  <!-- Table rows will be filled by JavaScript -->
+  </tbody>
+</table>
+
+<button onclick="goToRegisterPage()" class="add-expert-btn">Register New Expert</button>
+
+<script>
+  // Fetch data when the page loads
+  document.addEventListener('DOMContentLoaded', fetchData);
+  var token = localStorage.getItem('accessToken');
+
+  function fetchData() {
+    var url = 'http://localhost:8080/experts-controller/loadMapper';
+    fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        const tableBody = document.querySelector('#expertsTable tbody');
+        tableBody.innerHTML = '';
+        data.forEach(expert => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+              <td>${expert.id}</td>
+              <td>${expert.expertsName} ${expert.family}</td>
+              <td>${expert.rank}</td>
+              <td>${expert.capacity}</td>
+            `;
+          tableBody.appendChild(row);
+        });
+      })
+      .catch(error => console.error('Error:', error));
+  }
+
+  function goToRegisterPage() {
+    window.location.href = '/table/expertC.html'; // Replace with the actual URL of the register expert page
+  }
+</script>
+</body>
+</html>

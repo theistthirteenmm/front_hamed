@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+
+  <title>Chain App Dev - App Landing Page HTML5 Template</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!--
+
+  TemplateMo 570 Chain App Dev
+
+  https://templatemo.com/tm-570-chain-app-dev
+
+  -->
+
+  <!-- Additional CSS Files -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+  <link rel="stylesheet" href="assets/css/templatemo-chain-app-dev.css">
+  <link rel="stylesheet" href="assets/css/animated.css">
+  <link rel="stylesheet" href="assets/css/owl.css">
+
+</head>
+
+<body>
+
+<!-- ***** Preloader Start ***** -->
+<div id="js-preloader" class="js-preloader">
+  <div class="preloader-inner">
+    <span class="dot"></span>
+    <div class="dots">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+</div>
+<!-- ***** Preloader End ***** -->
+
+<!-- ***** Header Area Start ***** -->
+<header class="header-area header-sticky wow slideInDown" data-wow-duration="0.75s" data-wow-delay="0s">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <nav class="main-nav">
+          <!-- ***** Logo Start ***** -->
+          <a href="index.html" class="logo">
+            <img src="assets/images/logo.png" alt="Chain App Dev">
+          </a>
+          <!-- ***** Logo End ***** -->
+          <!-- ***** Menu Start ***** -->
+          <ul class="nav">
+            <li class="scroll-to-section"><a href="#top" class="active">خانه</a></li>
+            <li class="scroll-to-section"><a href="/table/v.html">لیست ماشین ها</a></li>
+            <li class="scroll-to-section"><a href="/table/cartable.html">کارتابل</a></li>
+            <li class="scroll-to-section"><a href="/table/expert.html">کارشناس</a></li>
+            <li class="scroll-to-section"><a href="#newsletter">Newsletter</a></li>
+            <li><div class="gradient-button"><a href="#" id="logoutBtn"><i class="fa fa-sign-in-alt"></i> خروج از سیستم</a></div></li>
+
+
+          </ul>
+          <a class='menu-trigger'>
+            <span>Menu</span>
+          </a>
+          <!-- ***** Menu End ***** -->
+        </nav>
+      </div>
+    </div>
+  </div>
+</header>
+<!-- ***** Header Area End ***** -->
+
+
+
+<div class="main-banner wow fadeIn" id="top" data-wow-duration="1s" data-wow-delay="0.5s">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="row">
+          <div class="col-lg-6 align-self-center">
+            <div class="left-content show-up header-text wow fadeInLeft" data-wow-duration="1s" data-wow-delay="1s">
+              <div class="row">
+                <div class="col-lg-12">
+                  <h2>Get The Latest App From App Stores</h2>
+                  <p>Chain App Dev is an app landing page HTML5 template based on Bootstrap v5.1.3 CSS layout provided by TemplateMo, a great website to download free CSS templates.</p>
+                </div>
+                <div class="col-lg-12">
+                  <div class="white-button first-button scroll-to-section">
+                    <a href="#contact">Free Quote <i class="fab fa-apple"></i></a>
+                  </div>
+                  <div class="white-button scroll-to-section">
+                    <a href="#contact">Free Quote <i class="fab fa-google-play"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="right-image wow fadeInRight" data-wow-duration="1s" data-wow-delay="0.5s">
+              <img src="assets/images/slider-dec.png" alt="">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Scripts -->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/owl-carousel.js"></script>
+<script src="assets/js/animation.js"></script>
+<script src="assets/js/imagesloaded.js"></script>
+<script src="assets/js/popup.js"></script>
+<script src="assets/js/custom.js"></script>
+
+
+<script>
+  // تعریف متغیر آدرس سرور
+  var serverUrl = 'http://localhost:8080';
+
+  // اضافه کردن event listener به گزینه logout برای انجام لاگ‌اوت
+  document.getElementById('logoutBtn').addEventListener('click', function(event) {
+    event.preventDefault();
+
+    // دریافت توکن از localStorage
+    var token = localStorage.getItem('accessToken');
+
+    // ارسال درخواست به سرور برای لاگ‌اوت
+    fetch(serverUrl + '/log/out?token=' + token, {
+      method: 'POST'
+    })
+      .then(response => {
+        if (response.ok) {
+          // در صورتی که لاگ‌اوت موفقیت‌آمیز بود، توکن از localStorage پاک می‌شود
+          localStorage.removeItem('accessToken');
+          // و سپس کاربر به صفحه لاگین هدایت می‌شود یا هر صفحه دیگری که شما تعیین کرده‌اید
+          window.location.href = '../index.html';
+        } else {
+          // نمایش پیغام خطا در صورتی که لاگ‌اوت ناموفق بود
+          console.error('Logout failed: ', response.statusText);
+          alert('Logout failed: ' + response.statusText);
+        }
+      })
+      .catch(error => {
+        // نمایش پیغام خطا در صورت بروز خطا در فرآیند لاگ‌اوت
+        console.error('Error during logout: ', error);
+        alert('Error during logout: ' + error.message);
+      });
+  });
+</script>
+</body>
+</html>

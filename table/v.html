@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="fonts/icomoon/style.css">
+  <link rel="stylesheet" href="css/owl.carousel.min.css">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+  <!-- Style -->
+  <link rel="stylesheet" href="css/style.css">
+  <title>Table #4</title>
+</head>
+<body>
+<div class="content">
+  <div class="container">
+    <h2 class="mb-5">Table #4</h2>
+    <!-- Combo box -->
+    <div class="form-group">
+      <label for="selection">Select Type:</label>
+      <select class="form-control" id="selection">
+        <option value="1">Type 1</option>
+        <option value="2">Type 2</option>
+        <option value="3">Type 3</option>
+      </select>
+    </div>
+    <!-- End of combo box -->
+    <div class="table-responsive custom-table-responsive">
+      <table id="dataTable" class="table custom-table">
+        <thead>
+        <tr>
+          <th scope="col">
+            <label class="control control--checkbox">
+              <input type="checkbox" class="js-check-all"/>
+              <div class="control__indicator"></div>
+            </label>
+          </th>
+          <th scope="col">Order</th>
+          <th scope="col">Chassis Number</th>
+          <th scope="col">Style</th>
+          <th scope="col">Factory ID</th>
+          <th scope="col">Allocation Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Rows will be filled by API -->
+        </tbody>
+      </table>
+    </div>
+    <button id="loadDataBtn" class="btn btn-primary">Load Data</button> <!-- Button to fetch data -->
+    <button id="allocateDataBtn" class="btn btn-primary">Allocate Data</button>
+    <button class="btn btn-primary">ثبت ماشین جدید<a href="/table/vc.html">...</a></button>
+  </div>
+</div>
+
+<script src="js/jquery-3.3.1.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<!-- DataTables JavaScript -->
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+<script src="js/main.js"></script>
+<script>
+  document.getElementById('loadDataBtn').addEventListener('click', function() {
+    var token = localStorage.getItem('accessToken');
+    var selection = document.getElementById('selection').value; // Get the selected option value
+    var url = 'http://localhost:8080/vehicles-controller/listVehicles/' + selection; // Form the URL
+    fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${token}` // Add token to request header
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        const tableBody = document.querySelector('#dataTable tbody');
+        tableBody.innerHTML = '';
+        data.forEach(item => {
+          const newRow = document.createElement('tr');
+          const checkboxCell = document.createElement('td');
+          checkboxCell.innerHTML = `
+                <label class="control control--checkbox">
+                    <input type="checkbox"/>
+                    <div class="control__indicator"></div>
+                </label>
+            `;
+          newRow.appendChild(checkboxCell);
+          const orderCell = document.createElement('td');
+          orderCell.textContent = item.id;
+          newRow.appendChild(orderCell);
+          const nameCell = document.createElement('td');
+          nameCell.innerHTML = `<a href="#">${item.chassisNo}</a>`;
+          newRow.appendChild(nameCell);
+          const occupationCell = document.createElement('td');
+          occupationCell.innerHTML = `
+                ${item.style}
+            `;
+          newRow.appendChild(occupationCell);
+          const contactCell = document.createElement('td');
+          contactCell.textContent = item.factory.id;
+          newRow.appendChild(contactCell);
+          const educationCell = document.createElement('td');
+          educationCell.textContent = item.allocationStatus;
+          newRow.appendChild(educationCell);
+          tableBody.appendChild(newRow);
+        });
+        // Initialize DataTable after loading data
+        $('#dataTable').DataTable();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  });
+
+  document.getElementById('allocateDataBtn').addEventListener('click', function() {
+    var token = localStorage.getItem('accessToken');
+
+    const selectedItems = [];
+    const checkboxes = document.querySelectorAll('#dataTable tbody input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+      if (checkbox.checked) {
+        const row = checkbox.closest('tr');
+        const orderId = row.cells[1].textContent;
+        const name = row.cells[2].querySelector('a').textContent;
+        const occupation = row.cells[3].textContent;
+        const contact = row.cells[4].textContent;
+        const education = row.cells[5].textContent;
+
+        selectedItems.push({
+          id: orderId,
+          chassisNo: name,
+          style: occupation,
+          factoryId: contact,
+          allocationStatus: education
+        });
+      }
+    });
+
+    fetch('http://localhost:8080/allocation-controller/allocateNew', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(selectedItems)
+    })
+      .then(response => response.json())
+      .then(data => {
+        // Process response from the API if necessary
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  });
+
+  document.querySelector('.js-check-all').addEventListener('change', function() {
+    const checkboxes = document.querySelectorAll('#dataTable tbody input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+      checkbox.checked = this.checked;
+    });
+  });
+</script>
+</body>
+</html>
